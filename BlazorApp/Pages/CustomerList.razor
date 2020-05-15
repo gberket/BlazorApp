@@ -1,0 +1,183 @@
+﻿@page "/customers"
+@inherits BaseCustomerList
+@*@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<AuthorizeView Roles="admin, superuser">
+*@
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<h3>List with our Customers</h3>
+@if (Customers == null)
+{
+    <div class="spinner">
+
+    </div>
+}
+else
+{
+    <div style="float:left">
+        <button class="btn btn-primary" @onclick="AddCustomer">Add Customer</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Company Name</th>
+                <th>Contact Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Region</th>
+                <th>Postal Code</th>
+                <th>Country</th>
+                <th>Phone</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Customers)
+            {
+                <tr>
+                    <td>@customer.Id</td>
+                    <td>@customer.CompanyName</td>
+                    <td><a href=@($"customerdetails/{customer.Id}")>@customer.ContactName</a></td>
+                    <td>@customer.Address</td>
+                    <td>@customer.City</td>
+                    <td>@customer.Region</td>
+                    <td>@customer.PostalCode</td>
+                    <td>@customer.Country</td>
+                    <td>@customer.Phone</td>
+                    <td>
+                        <!-- Edit current Customer -->
+                        <button class="btn btn-primary" @onclick="(async () => await EditCustomer(customer.Id))">Edit</button>
+                    </td>
+                    <td>
+                        <!-- Delete current Customer -->
+                        <button class="btn btn-danger" @onclick="(async () => await DeleteConfirm(customer.Id))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Component to show our paging -->
+    <PagingComponent PageIndex=@paginatedList.PageIndex TotalPages=@paginatedList.TotalPages OnClick="PageIndexChanged"
+                     HasNextPage=@paginatedList.HasNextPage HasPreviousPage=@paginatedList.HasPreviousPage>
+    </PagingComponent>
+}
+@*  @</AuthorizeView>*@
+
+<!--Modal to Edit or Add a Customer-->
+@if (isAdd)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">@modalTitle</h3>
+                    <button type="button" class="close" @onclick="closeModal">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="CompanyName" class="control-label">Company Name</label>
+                            <input for="CompanyName" class="form-control" @bind="cust.CompanyName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactName" class="control-label">Contact Name</label>
+                            <input for="ContactName" class="form-control" @bind="cust.ContactName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Address" class="control-label">Address</label>
+                            <input for="Address" class="form-control" @bind="cust.Address" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="City" class="control-label">City</label>
+                            <input asp-for="City" class="form-control" @bind="cust.City" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Region" class="control-label">Region</label>
+                            <input asp-for="Region" class="form-control" @bind="cust.Region" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Country" class="control-label">Country</label>
+                            <input asp-for="Country" class="form-control" @bind="cust.Country" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PostalCode" class="control-label">Postal Code</label>
+                            <input asp-for="PostalCode" class="form-control" @bind="cust.PostalCode" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label">Phone</label>
+                            <input asp-for="Phone" class="form-control" @bind="cust.Phone" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-block btn-info" @onclick="(async () => await SaveCustomer())" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!--Modal for Deletion-->
+@if (isDelete)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Delete Customer</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Do you want to delete this customer ??</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Company Name</td>
+                            <td>@cust.CompanyName</td>
+                        </tr>
+                        <tr>
+                            <td>Contact Name</td>
+                            <td>@cust.ContactName</td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>@cust.Address</td>
+                        </tr>
+                        <tr>
+                            <td>City</td>
+                            <td>@cust.City</td>
+                        </tr>
+                        <tr>
+                            <td>Region</td>
+                            <td>@cust.Region</td>
+                        </tr>
+                        <tr>
+                            <td>Country</td>
+                            <td>@cust.Country</td>
+                        </tr>
+                        <tr>
+                            <td>Postal Code</td>
+                            <td>@cust.PostalCode</td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>@cust.Phone</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" @onclick="(async () => await DeleteCustomer(cust.Id))" data-dismiss="modal">YES</button>
+                    <button class="btn btn-warning" @onclick="closeModal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+

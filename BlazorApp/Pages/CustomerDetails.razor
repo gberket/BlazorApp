@@ -1,0 +1,27 @@
+﻿@page "/customerdetails/{id}"
+@inherits BaseCustomerDetails
+
+<h3>Customer's Detailed Information</h3>
+
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Customer.CompanyName</h1>
+            </div>
+
+            <div class="card-body text-center">
+                <h4>Contact Name: @Customer.ContactName </h4>
+                <h4>Address: @Customer.Address</h4>
+                <h4>City: @Customer.City </h4>
+                <h4>Region: @Customer.Region</h4>
+                <h4>Postal Code: @Customer.PostalCode</h4>
+                <h4>Country: @Customer.Country</h4>
+                <h4>Phone: @Customer.Phone</h4>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/" class="btn btn-primary">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
