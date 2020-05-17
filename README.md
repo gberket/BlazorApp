@@ -25,3 +25,20 @@ Extra (nice to have)
 
 Optional
 - Bootstrap 
+
+# Completed
+
+- Configuration to use MongoDB 
+- Grid with customers and server side paging
+- CRUD operations on "Customer" model 
+- Expose CRUD operations as an API
+- Authentication with the provided demo Identity Server 4
+- Protected also the API with the provided demo Identity Server 4
+
+## Technologies Used
+- C# 
+- .Net Core
+- Blazor
+- Bootstrap
+
+
