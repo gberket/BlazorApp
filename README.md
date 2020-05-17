@@ -41,4 +41,8 @@ Optional
 - Blazor
 - Bootstrap
 
+## Login credentials
+- Username: bob
+- Password: bob
+
 
