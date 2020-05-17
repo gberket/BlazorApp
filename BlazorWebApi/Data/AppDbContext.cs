@@ -30,16 +30,5 @@ namespace BlazorWebApi.Data
                 return _mongoDatabase.GetCollection<Customer>("CustomerRecord");
             }
         }
-
-        /// <summary>
-        /// Database Users Collection
-        /// </summary>
-        public IMongoCollection<User> UsersCollection
-        {
-            get
-            {
-                return _mongoDatabase.GetCollection<User>("UsersCollection");
-            }
-        }
     }
 }

@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using BlazorWebApi.Data;
 using BlazorWebApi.Data.Interfaces;
 using BlazorWebApi.Data.Repositories;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,10 +32,34 @@ namespace BlazorWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddTransient<ICustomersRepository, CustomersRepository>();
             services.AddSingleton(options => options.GetRequiredService<IOptions<AppDbContext>>().Value);
-            services.AddControllers();
+
+            /// Transient objects are always different; a new instance is provided to every controller and every service.
+            /// Scoped objects are the same within a request, but different across different requests
+            /// Singleton objects are the same for every object and every request
+            services.AddScoped<ICustomersRepository, CustomersRepository>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader());
+            });
+
+            var requireAuthenticatedUserPolicy = new AuthorizationPolicyBuilder()
+                  .RequireAuthenticatedUser()
+                  .Build();
+
+            services.AddControllers(configure =>
+            {
+                configure.Filters.Add(new AuthorizeFilter(requireAuthenticatedUserPolicy));
+            });
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://demo.identityserver.io/";
+                    options.ApiName = "api";
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +73,8 @@ namespace BlazorWebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

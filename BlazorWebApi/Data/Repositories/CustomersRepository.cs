@@ -37,38 +37,42 @@ namespace BlazorWebApi.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Get Customer by id
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         public async Task<Customer> GetCustomer(string customerId)
         {
             FilterDefinition<Customer> filterEmployeeData = Builders<Customer>.Filter.Eq("Id", customerId);
             return await appDbContext.CustomerRecord.Find(filterEmployeeData).FirstAsync();
         }
 
+        /// <summary>
+        /// Get all Customers from Database 
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Customer>> GetCustomers()
         {
             return await appDbContext.CustomerRecord.AsQueryable<Customer>().Where(c => true).ToListAsync();
         }
 
-
-        public async Task<User> GetUser(string userId)
-        {
-            FilterDefinition<User> filterUserData = Builders<User>.Filter.Eq("Id", userId);
-            return await appDbContext.UsersCollection.Find(filterUserData).FirstAsync();
-        }
-
-
-
-
+        /// <summary>
+        /// Get Customers List with paging
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public async Task<PaginatedList<Customer>> GetCustomersPaginated(int pageIndex, int pageSize)
         {
 
-            //check pagesize not to b 0!!!!!!!!!!!!!!!!!!!
-            int itemsToSkip = (pageIndex - 1) * pageSize;
+            int itemsToSkip = (pageIndex - 1) * pageSize ;
             int itemsToTake = pageSize;
 
             var itemsQuery = await appDbContext.CustomerRecord.Find(_ => true).ToListAsync();
 
             int totalItems = itemsQuery.Count();
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize );
 
             var items = itemsQuery.Skip(itemsToSkip).Take(itemsToTake).ToList();
 
@@ -81,6 +85,11 @@ namespace BlazorWebApi.Data.Repositories
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Update an existing Customer record
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
             try
@@ -94,6 +103,11 @@ namespace BlazorWebApi.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Delete an existing Customer from Database
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         public async Task DeleteCustomer(string customerId)
         {
             try

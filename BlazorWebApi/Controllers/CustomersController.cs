@@ -131,7 +131,7 @@ namespace BlazorWebApi.Controllers
                 await customerRepository.DeleteCustomer(id);
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from database");
             }

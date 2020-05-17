@@ -15,7 +15,5 @@ namespace BlazorWebApi.Data.Interfaces
         Task<Customer> AddCustomer(Customer customer);
         Task<Customer> UpdateCustomer(Customer customer);
         Task DeleteCustomer(string customerId);
-
-        Task<User> GetUser(string userId);
     }
 }

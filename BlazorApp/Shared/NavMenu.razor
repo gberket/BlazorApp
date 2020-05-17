@@ -6,23 +6,18 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+    <AuthorizeView>
+        <NotAuthorized>
+            <NavLink class="nav-link" style="color:white" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" style="color:white" aria-hidden="true"></span> Home
             </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+        </NotAuthorized>
+        <Authorized>
+            <NavLink class="nav-link" href="customers" style="color:white">
+                <span class="oi oi-people" style="color:white" aria-hidden="true"></span> Customers
             </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="customers">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Customers
-            </NavLink>
-        </li>
-    </ul>
+        </Authorized>
+</AuthorizeView>
 </div>
 
 @code {
